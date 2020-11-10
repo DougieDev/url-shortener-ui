@@ -46,5 +46,32 @@ describe('App', () => {
         expect(screen.getByText('http://localhost:3001/useshorturl/2')).toBeInTheDocument()
     })
 
+    it('When the App renders, make sure that users can fill out the form, submit the form, and see a new url added to the DOM', async () => {
+        postUrl.mockResolvedValueOnce({
+            id: 3,
+            long_url: 'www.wiwiwiwiwiwiwiwiwiwi.com',
+            short_url: 'http://localhost:3001/useshorturl/3',
+            title: 'Title 3'
+        })
+
+        render(<App/>)
+
+        const url1 = await waitFor(() => screen.getByText('Title 1'))
+        const url2 = await waitFor(() => screen.getByText('Title 2'))
+        expect(url1).toBeInTheDocument()
+        expect(url2).toBeInTheDocument()
+
+        userEvent.type(screen.getByPlaceholderText('Title...'), 'Title 3')
+        userEvent.type(screen.getByPlaceholderText('URL to Shorten...'), 'www.wiwiwiwiwiwiwiwiwiwi.com')
+        expect(screen.getByPlaceholderText('Title...')).toHaveValue('Title 3')
+        expect(screen.getByPlaceholderText('URL to Shorten...')).toHaveValue('www.wiwiwiwiwiwiwiwiwiwi.com')
+        userEvent.click(screen.getByRole('button', {name: 'Shorten Please!'}))
+
+        const lastCheck = await waitFor(() => screen.getByText('www.wiwiwiwiwiwiwiwiwiwi.com'))
+        expect(lastCheck).toBeInTheDocument()
+        expect(screen.getByText('www.wiwiwiwiwiwiwiwiwiwi.com')).toBeInTheDocument()
+        expect(screen.getByText('http://localhost:3001/useshorturl/3')).toBeInTheDocument()
+    })
+
 
 })
