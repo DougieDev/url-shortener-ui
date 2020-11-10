@@ -13,8 +13,8 @@ export class App extends Component {
     }
   }
 
-  componentDidMount() {
-    getUrls()
+  async componentDidMount() {
+    await getUrls()
     .then(url => this.setState({ urls: url.urls }))
     .catch(error => this.setState({ error: 'Whoops! Something blew up!'}))
   }
