@@ -28,12 +28,23 @@ describe('App', () => {
     })
 
     it('When the App is rendered, make sure any UI specific to the App component renders as well', () => {
-        render(
-            <App />
-        )
+        render(<App />)
 
         expect(screen.getByText('URL Shortener')).toBeInTheDocument()
     })
 
-    
+    it('When the App renders, make sure that any urls on the server are added to the dom', async () => {
+        render(<App />)
+
+        const url1 = await waitFor(() => screen.getByText('Title 1'))
+        const url2 = await waitFor(() => screen.getByText('Title 2'))
+        expect(url1).toBeInTheDocument()
+        expect(screen.getByText('www.wewewewewewewewewe.com')).toBeInTheDocument()
+        expect(screen.getByText('http://localhost:3001/useshorturl/1')).toBeInTheDocument()
+        expect(url2).toBeInTheDocument()
+        expect(screen.getByText('www.wowowowowowowowowo.com')).toBeInTheDocument()
+        expect(screen.getByText('http://localhost:3001/useshorturl/2')).toBeInTheDocument()
+    })
+
+
 })
